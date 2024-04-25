@@ -34,9 +34,8 @@ jobs:
           git fetch upstream pull/${{ github.event.inputs.pr_number }}/head:test-pr
           git checkout test-pr
           cmake -B . -DCOMPUTE_BACKEND=cuda -S . && cmake --build . && pip install -e . && pip freeze | grep bitsandbytes
-          pip install pytest-reportlog pytest-cov parameterized datasets scipy einops
-          pip install "pytest>=7.2.0,<8.0.0" # see: https://github.com/huggingface/transformers/blob/ce4fff0be7f6464d713f7ac3e0bbaafbc6959ae5/setup.py#L148C6-L148C26
-
+          pip install ".[test]"
+          
       - name: Show bitsandbytes and its versions
         run: pip freeze | grep bitsandbytes
       

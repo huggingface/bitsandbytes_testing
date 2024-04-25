@@ -37,7 +37,7 @@ setup(
     install_requires=["torch", "numpy"],
     extras_require={
         "benchmark": ["pandas", "matplotlib"],
-        "test": ["scipy"],
+        "test": ["scipy", "pytest-reportlog", "pytest-cov", "parameterized", "datasets", "einops"],
     },
     long_description=read("README.md"),
     long_description_content_type="text/markdown",

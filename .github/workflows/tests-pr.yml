@@ -1,0 +1,56 @@
+name: BNB tests on Pull Requests
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number'
+        required: true 
+        
+env:
+  # To be able to run tests on CUDA 12.2
+  NVIDIA_DISABLE_REQUIRE: "1"
+  SLACK_API_TOKEN: ${{ secrets.SLACK_API_TOKEN }}
+  OUTPUT_SLACK_CHANNEL_ID: "C06ALV91VML"
+
+jobs:
+  run_tests_single_gpu:
+    strategy:
+      fail-fast: false
+    runs-on: [self-hosted, single-gpu, nvidia-gpu, t4, ci]
+    container:
+      image: "huggingface/peft-gpu-bnb-latest:latest"
+      options: --gpus all --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v3
+      - name: Pip install and checkout
+        run: |
+          source activate peft
+          pip uninstall bitsandbytes
+          git remote add upstream https://github.com/TimDettmers/bitsandbytes.git
+          git fetch upstream pull/${{ github.event.inputs.pr_number }}/head:test-pr
+          git checkout test-pr
+          cmake -B . -DCOMPUTE_BACKEND=cuda -S . && cmake --build . && pip install -e . && pip freeze | grep bitsandbytes
+          pip install ".[test]"
+          
+      - name: Show bitsandbytes and its versions
+        run: pip freeze | grep bitsandbytes
+      
+      - name: Run core tests on single GPU
+        id: tests
+        if: always()
+        run: |
+          source activate peft
+          pytest tests/
+          
+      - name: Post to Slack
+        if: always()
+        uses: https://github.com/huggingface/transformers/blob/main/.github/actions/post-slack/action.yml@main
+        with:
+          slack_channel: ${{ env.OUTPUT_SLACK_CHANNEL_ID }}
+          title: 🤗 Results of the bitsandbytes tests
+          status: ${{ steps.tests.conclusion}}
+          slack_token: ${{ secrets.CI_SLACK_BOT_TOKEN }}

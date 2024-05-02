@@ -17,7 +17,7 @@ jobs:
   run_tests_single_gpu:
     strategy:
       fail-fast: false
-    runs-on: [self-hosted, single-gpu, nvidia-gpu, t4, ci]
+    runs-on: [self-hosted, single-gpu, nvidia-gpu, a10, ci]
     container:
       image: "huggingface/peft-gpu-bnb-latest:latest"
       options: --gpus all --shm-size "16gb" --ipc host -v /mnt/cache/.cache/huggingface:/mnt/cache/

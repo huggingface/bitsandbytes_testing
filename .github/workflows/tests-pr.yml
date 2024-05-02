@@ -35,9 +35,9 @@ jobs:
           git fetch upstream pull/${{ github.event.inputs.pr_number }}/head:test-pr
           git checkout test-pr
           cmake -B . -DCOMPUTE_BACKEND=cuda -S . && cmake --build . && pip install -e . && pip freeze | grep bitsandbytes
-          which pip
-          which python
-          python -m pip install --no-cache-dir ".[test]"
+          echo "$(which pip)"
+          echo "$(which python)"
+          python -m pip install --no-cache-dir ".[test]" pytest
           
       - name: Show bitsandbytes and its versions
         run: git log --oneline -n 5  # Shows the last 5 commits to verify the correct commit is checked out

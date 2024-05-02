@@ -40,7 +40,9 @@ jobs:
           pip install ".[test]"
           
       - name: Show bitsandbytes and its versions
-        run: pip freeze | grep bitsandbytes
+        run: |
+          source activate peft
+          pip freeze | grep bitsandbytes
       
       - name: Run core tests on single GPU
         id: tests
@@ -56,4 +58,4 @@ jobs:
           slack_channel: ${{ env.OUTPUT_SLACK_CHANNEL_ID }}
           title: 🤗 Results of the bitsandbytes tests
           status: ${{ steps.tests.conclusion}}
-          slack_token: ${{ secrets.CI_SLACK_BOT_TOKEN }}
+          slack_token: ${{ secrets.SLACK_API_TOKEN }}

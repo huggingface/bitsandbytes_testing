@@ -10,8 +10,6 @@ on:
 env:
   # To be able to run tests on CUDA 12.2
   NVIDIA_DISABLE_REQUIRE: "1"
-  SLACK_API_TOKEN: ${{ secrets.SLACK_CIFEEDBACK_BOT_TOKEN }}
-  OUTPUT_SLACK_CHANNEL_ID: "C06ALV91VML"
 
 jobs:
   run_tests_single_gpu:
@@ -37,7 +35,7 @@ jobs:
           git fetch upstream pull/${{ github.event.inputs.pr_number }}/head:test-pr
           git checkout test-pr
           cmake -B . -DCOMPUTE_BACKEND=cuda -S . && cmake --build . && pip install -e . && pip freeze | grep bitsandbytes
-          pip install --no-cache-dir ".[test]"
+          pip install --force-reinstall --no-cache-dir ".[test]"
           
       - name: Show bitsandbytes and its versions
         run: git log --oneline -n 5  # Shows the last 5 commits to verify the correct commit is checked out
@@ -54,7 +52,7 @@ jobs:
         if: always()
         uses: huggingface/transformers/.github/actions/post-slack@main
         with:
-          slack_channel: ${{ env.OUTPUT_SLACK_CHANNEL_ID }}
+          slack_channel: "C06ALV91VML"  # channel: #bnb-daily-ci-collab
           title: 🤗 Results of the bitsandbytes tests
           status: ${{ steps.tests.conclusion}}
-          slack_token: ${{ secrets.SLACK_API_TOKEN }}
+          slack_token: ${{ secrets.SLACK_CIFEEDBACK_BOT_TOKEN }}

@@ -29,7 +29,7 @@ jobs:
       - name: Pip install and checkout
         run: |
           source activate peft
-          pip uninstall bitsandbytes
+          pip uninstall -y bitsandbytes
           git remote add upstream https://github.com/TimDettmers/bitsandbytes.git
           git fetch upstream pull/${{ github.event.inputs.pr_number }}/head:test-pr
           git checkout test-pr

@@ -11,7 +11,7 @@ env:
   # To be able to run tests on CUDA 12.2
   NVIDIA_DISABLE_REQUIRE: "1"
   SLACK_API_TOKEN: ${{ secrets.SLACK_API_TOKEN }}
-  OUTPUT_SLACK_CHANNEL_ID: "C071049S8EM"
+  OUTPUT_SLACK_CHANNEL_ID: "C06ALV91VML"
 
 jobs:
   run_tests_single_gpu:

@@ -48,7 +48,7 @@ jobs:
           
       - name: Post to Slack
         if: always()
-        uses: huggingface/transformers/blob/main/.github/actions/post-slack@main
+        uses: huggingface/transformers/.github/actions/post-slack@main
         with:
           slack_channel: ${{ env.OUTPUT_SLACK_CHANNEL_ID }}
           title: 🤗 Results of the bitsandbytes tests

@@ -47,6 +47,7 @@ jobs:
         if: always()
         run: |
           source activate peft
+          pip list
           pytest tests/
           
       - name: Post to Slack
